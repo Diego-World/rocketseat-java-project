@@ -2,6 +2,7 @@ package br.com.diegogouveia.todolist.controller;
 
 import br.com.diegogouveia.todolist.Repository.TaskRepository;
 import br.com.diegogouveia.todolist.model.Task;
+import br.com.diegogouveia.todolist.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(task);
     }
 
-    @GetMapping("/")
+    @GetMapping("/{idUser}")
     public List<Task> list(HttpServletRequest request){
         var idUser = request.getAttribute("idUser");
         var tasks = this.taskRepository.findByIdUser((UUID) idUser);
@@ -44,10 +45,9 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public Task update(@RequestBody Task task, HttpServletRequest request, @PathVariable UUID id){
-        var idUser = request.getAttribute("idUser");
-        task.setIdUser((UUID) idUser);
-        task.setId(id);
-        return this.taskRepository.save(task);
+        var taskBanco = this.taskRepository.findById(id).orElse(null);
+        Utils.copyNonNullProperties(task,taskBanco);
+        return this.taskRepository.save(taskBanco);
     }
 
 
