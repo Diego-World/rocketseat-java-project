@@ -1,7 +1,7 @@
 FROM ubuntu:latest AS build
 
 RUN apt-get update
-RUN apt-get intall openjdk-17-jdk -y
+RUN apt-get intall openjdk-17-openjdk -y
 
 COPY . .
 
